@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="ProjectMapper">
+  	<sql id="kind">
+ 		<trim prefix="where" prefixOverrides="and || or">
+ 		<if test='kind == ""'>
+ 			emp_name like '%'||#{search}||'%'
+ 		</if>
+ 		<if test='kind == "m"'>
+ 			emp_name like '%'||#{search}||'%' and dept_name='m'
+ 		</if>
+ 		<if test='kind == "n"'>
+ 			emp_name like '%'||#{search}||'%' and dept_name='n'
+ 		</if>
+ 		<if test='kind == "h"'>
+ 			emp_name like '%'||#{search}||'%' and dept_name='h'
+ 		</if>
+ 		</trim>
+ 	</sql>
+  	<select id="projectList" resultType="com.intranet.project.ProjectDTO">
+  	
+  		select * from emp e,project p where e.emp_grade='과장' and e.p_num=p.p_num
+  	
+  	</select>
+  	
+  	<insert id="insert" parameterType="com.intranet.project.ProjectDTO">
+  		insert into project values (project_seq.nextval, #{p_title}, #{p_budget}, #{p_start}, #{p_last}, #{p_contents}, #{p_dday})
+  	</insert>
+  	
+  	<select id="projectListup" resultType="java.lang.Integer">
+  		select max(p_num) from project
+  	</select>
+  	
+  	<update id="update" parameterType="com.intranet.emp.EmpDTO">
+		update emp set p_num=#{p_num} where emp_num=#{emp_num}
+  	</update>
+  	
+  
+  	<select id="list" resultType="com.intranet.emp.EmpDTO" parameterType="com.intranet.util.ListSearch">
+  		select * from emp 
+  		<include refid="kind"></include>
+  	</select>
+  	
+  	<select id="search" resultType="com.intranet.emp.EmpDTO" parameterType="java.lang.Integer">
+  		select * from emp where emp_num=#{num}
+  	</select>
+  	
+  	
+  	
+  	
+  	
+  
+  
+  </mapper>
